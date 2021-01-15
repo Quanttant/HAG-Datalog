@@ -3,6 +3,8 @@ name: Get Data
 on:
   schedule:
     - cron:  '*/3 * * * *'
+  push:
+    branches: [ main ]
 
 jobs:
   get-data:
