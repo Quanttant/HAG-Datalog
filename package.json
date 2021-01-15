@@ -16,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/Quanttant/HAG-Datalog/issues"
   },
-  "homepage": "https://github.com/Quanttant/HAG-Datalog#readme"
+  "homepage": "https://github.com/Quanttant/HAG-Datalog#readme",
+  "dependencies": {
+    "@octokit/core": "^3.2.4",
+    "axios": "^0.21.1",
+    "jsdom": "^16.2.2",
+    "moment-timezone": "^0.5.32"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  }
 }
