@@ -57,8 +57,8 @@ async function update() {
     const sha = shaResponse.data.sha;
     const updatedData = Buffer.from(JSON.stringify(data)).toString("base64");
 
-    try {
-        await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+    octokit
+        .request("PUT /repos/{owner}/{repo}/contents/{path}", {
             accept: "application/vnd.github.v3+json",
             owner: "Quanttant",
             repo: "HAG-Datalog",
@@ -66,10 +66,13 @@ async function update() {
             message: `Data updated @ ${d}`,
             content: updatedData,
             sha: sha,
+        })
+        .then((resp) => {
+            console.log(resp);
+        })
+        .catch((e) => {
+            console.log(e);
         });
-    } catch (error) {
-        throw(error)
-    }
 }
 
 update();
