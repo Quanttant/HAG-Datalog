@@ -2,25 +2,21 @@ const axios = require("axios");
 const moment = require("moment-timezone");
 const { JSDOM } = require("jsdom");
 const { Octokit } = require("@octokit/core");
+const updateLog = require("./updatelog");
+const updateStats = require("./updatestats");
 
 moment.updateLocale("tr");
 moment.locale("tr");
 
 const octokit = new Octokit({ auth: process.env.MY_GITHUB_API_TOKEN });
 
-const URL = "https://covid19asi.saglik.gov.tr/";
-const headerOptions = {
-    headers: {
-        accept: "application/json",
-    },
-};
 const govOptions = {
     method: "GET",
     headers: {
         "user-agent":
             "Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0",
     },
-    url: URL,
+    url: "https://covid19asi.saglik.gov.tr/",
 };
 
 const SYSREGEX = /Sys.*/gm;
@@ -35,44 +31,14 @@ async function update() {
         else return String(match);
     });
     const dom = new JSDOM(body, { runScripts: "dangerously" });
-    const date = moment(new Date().getDate(), "DD.MM.YYYY").format(
-        "DD/MM/YYYY"
-    );
     const d = moment().format();
 
-    let resp = await axios.get(
-        "https://raw.githubusercontent.com/Quanttant/HAG-Datalog/main/log.json",
-        headerOptions
-    );
-
-    if (resp.status != 200) throw "log.json alinamadi";
-    let data = resp.data;
-    data[d] = dom.window.asiyapilankisisayisi;
-
-    const shaResponse = await axios.get(
-        "https://api.github.com/repos/Quanttant/HAG-Datalog/contents/log.json",
-        headerOptions
-    );
-
-    const sha = shaResponse.data.sha;
-    const updatedData = Buffer.from(JSON.stringify(data)).toString("base64");
-
-    octokit
-        .request("PUT /repos/{owner}/{repo}/contents/{path}", {
-            accept: "application/vnd.github.v3+json",
-            owner: "Quanttant",
-            repo: "HAG-Datalog",
-            path: "log.json",
-            message: `Data updated @ ${d}`,
-            content: updatedData,
-            sha: sha,
-        })
-        .then((resp) => {
-            console.log(resp);
-        })
-        .catch((e) => {
-            console.log(e);
-        });
+    // update log
+    updateLog(dom, octokit, d);
+    setTimeout(() => {
+        updateStats(dom, octokit, d);
+    }, 5000);
+    // update stats
 }
 
 update();

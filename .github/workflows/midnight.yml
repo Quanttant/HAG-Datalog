@@ -1,0 +1,18 @@
+name: update yesterday data
+
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+
+jobs:
+  get-data:
+    runs-on: ubuntu-latest
+    env: 
+        MY_GITHUB_API_TOKEN: ${{ secrets.MY_GITHUB_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: npm i
+      - run: npm run update 

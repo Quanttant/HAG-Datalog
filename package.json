@@ -4,7 +4,8 @@
   "description": "Hangi Aşı Grubundayım App Data Logger",
   "main": "index.js",
   "scripts": {
-    "get": "node index.js"
+    "get": "node index.js",
+    "update": "node updateYesterday.js"
   },
   "repository": {
     "type": "git",
