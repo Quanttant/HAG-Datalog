@@ -14,8 +14,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-          env: 
-            MY_GITHUB_API_TOKEN: ${{secrets.MY_GITHUB_API_TOKEN}}
+        env: 
+          MY_GITHUB_API_TOKEN: ${{secrets.MY_GITHUB_API_TOKEN}}
       - run: npm i
       - run: npm run get 
         
