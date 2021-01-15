@@ -7,7 +7,7 @@ moment.updateLocale("tr");
 moment.locale("tr");
 
 const octokit = new Octokit({ auth: process.env.MY_GITHUB_API_TOKEN });
-const octokit = new Octokit({ auth: TOKEN });
+
 const URL = "https://covid19asi.saglik.gov.tr/";
 const headerOptions = {
     headers: {
