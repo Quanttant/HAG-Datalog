@@ -1,4 +1,4 @@
-name: Get Data
+name: fetch
 
 on:
   schedule:
