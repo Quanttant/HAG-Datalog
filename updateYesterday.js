@@ -2,7 +2,6 @@ const axios = require("axios");
 const moment = require("moment-timezone");
 const { JSDOM } = require("jsdom");
 const { Octokit } = require("@octokit/core");
-
 moment.updateLocale("tr");
 moment.locale("tr");
 
@@ -39,6 +38,33 @@ async function update() {
     const dom = new JSDOM(body, { runScripts: "dangerously" });
     const d = moment().format();
 
+    let logResp = await axios.get(
+        "https://raw.githubusercontent.com/Quanttant/HAG-Datalog/main/log.json",
+        headerOptions
+    );
+
+    if (logResp.status != 200) throw "log.json alinamadi";
+
+    let midnight = new Date();
+
+    midnight.setHours(0, 0, 0, 0);
+
+    const offsetDiff = -180 - midnight.getTimezoneOffset();
+
+    if (offsetDiff !== 0) {
+        midnight.setMinutes(midnight.getMinutes() + offsetDiff);
+    }
+
+    const entries = Object.entries(logResp.data).map((x) => ({
+        date: new Date(x[0]),
+        count: x[1],
+    }));
+
+    const entriesOfYesterday = entries.filter((x) => x.date < midnight);
+
+    const lastEntryOfYesterday =
+        entriesOfYesterday[entriesOfYesterday.length - 1];
+
     let resp = await axios.get(
         "https://raw.githubusercontent.com/Quanttant/HAG-Datalog/main/stats.json",
         headerOptions
@@ -46,8 +72,9 @@ async function update() {
     if (resp.status != 200) throw "stats.json alinamadi";
 
     let data = resp.data;
+
     data.total = dom.window.asiyapilankisisayisi;
-    data.yesterday = data.total - data.yesterday;
+    data.yesterday = parseInt(lastEntryOfYesterday.count);
 
     const shaResponse = await axios.get(
         "https://api.github.com/repos/Quanttant/HAG-Datalog/contents/stats.json",
