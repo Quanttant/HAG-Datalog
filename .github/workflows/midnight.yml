@@ -2,7 +2,7 @@ name: update yesterday data
 
 on:
   schedule:
-    - cron:  '0 0 * * *'
+    - cron:  '5 21 * * *'
 
 jobs:
   get-data:
