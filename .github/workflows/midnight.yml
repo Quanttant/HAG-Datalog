@@ -1,6 +1,9 @@
 name: update yesterday data
 
 on:
+  push:
+      branches:
+        - main
   schedule:
     - cron:  '5 21 * * *'
 
